@@ -1,7 +1,7 @@
 var config = {
     'development': {
         mysql: {
-            database: 'dcms',
+            database: 'hotel',
             username: 'root',
             password: ''
         }
