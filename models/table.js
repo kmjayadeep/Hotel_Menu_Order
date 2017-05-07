@@ -2,7 +2,10 @@
 
 module.exports = function(sequelize, DataTypes) {
     var Table = sequelize.define("Table", {
-        name: DataTypes.STRING,
+        name: {
+            type: DataTypes.STRING,
+            unique: true
+        },
         pin: DataTypes.STRING //password
     }, {
         classMethods: {
