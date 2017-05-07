@@ -1,7 +1,7 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-    var OrderItem = sequelize.define("OrderItem", {
+    var OrderItem = sequelize.define("orderItem", {
         quantity: DataTypes.INTEGER
     }, {
         classMethods: {
