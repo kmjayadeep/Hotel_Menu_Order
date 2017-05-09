@@ -9,5 +9,6 @@ router.get('/', function(req, res, next) {
 router.use('/item',require('./item'))
 router.use('/order',require('./order'))
 router.use('/table',require('./table'))
+router.use('/admin',require('./admin'))
 
 module.exports = router;

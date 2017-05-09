@@ -11,7 +11,69 @@ router.get('/', (req, res) => {
         })
 });
 
-router.get('/:table', (req, res) => {
+router.get('/placed', (req, res) => {
+    models.order.findAll({
+            where: {
+                status: 'PLACED'
+            },
+            include: [{
+                model: models.table,
+            }, {
+                model: models.orderItem,
+                include: models.item
+            }]
+        })
+        .then(ordersData => {
+            // res.json(ordersData)
+            let orders = ordersData.map(order => {
+                let o = {
+                    id: order.id,
+                    comments: order.comments,
+                    status: order.status,
+                    amount: order.amount,
+                    table: order.table.name,
+                    orderItems: order.orderItems
+                }
+                return o
+            })
+            res.json(orders)
+        }).catch(err => {
+            res.status(400).json(err)
+        })
+})
+
+router.get('/ready', (req, res) => {
+    models.order.findAll({
+            where: {
+                status: 'READY'
+            },
+            include: [{
+                model: models.table,
+            }, {
+                model: models.orderItem,
+                include: models.item
+            }]
+        })
+        .then(ordersData => {
+            // res.json(ordersData)
+            let orders = ordersData.map(order => {
+                let o = {
+                    id: order.id,
+                    comments: order.comments,
+                    status: order.status,
+                    amount: order.amount,
+                    table: order.table.name,
+                    orderItems: order.orderItems
+                }
+                return o
+            })
+            res.json(orders)
+        }).catch(err => {
+            res.status(400).json(err)
+        })
+})
+
+router.get('/table/:table', (req, res) => {
     models.order.findAll({
             where: {
                 tableId: req.body.table
@@ -43,6 +105,22 @@ router.post('/', (req, res) => {
         }).catch(err => {
             res.status(400).json(err)
         })
+})
+
+router.post('/status/:orderId', (req, res) => {
+    models.order.findOne({
+        where: {
+            id: req.params.orderId
+        }
+    }).then(order => {
+        order.status = req.body.status
+        return order.save()
+    }).then(order => {
+        res.json(order)
+    }).catch(err => {
+        res.status(400).json(err)
+
+    })
 })
 
 module.exports = router;
