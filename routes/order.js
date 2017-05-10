@@ -110,6 +110,7 @@ router.post('/', (req, res) => {
             order = newOrder
             var items = req.body.items.map(item => {
                 item.orderId = newOrder.id
+                delete item.id
                 return item
             })
             return models.orderItem.bulkCreate(items)

@@ -23,7 +23,7 @@ router.post('/:id', (req, res) => {
     }).then(item => {
         res.json(item)
     }).catch(er => {
-        res.staus(400).json(er)
+        res.status(400).json(er)
     })
 })
 
@@ -35,11 +35,11 @@ router.delete('/:id', (req, res) => {
     }).then(r => {
         res.json(1)
     }).catch(err => {
-        res.staus(400).json(err)
+        res.status(400).json(err)
     })
 })
 
-router.post('/recommended', (req, res) => {
+router.post('/order/recommended', (req, res) => {
     models.item.findAll()
         .then(items => {
             res.json(items)
