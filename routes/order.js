@@ -11,6 +11,19 @@ router.get('/', (req, res) => {
         })
 });
 
+router.get('/:id', (req, res) => {
+    models.order.findOne({
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(orders => {
+            res.json(orders)
+        }).catch(err => {
+            res.status(400).json(err)
+        })
+});
+
 router.get('/placed', (req, res) => {
     models.order.findAll({
             where: {
