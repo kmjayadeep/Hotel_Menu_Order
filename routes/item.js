@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models')
+var _ = require('underscore')
 
 router.get('/', (req, res) => {
     models.item.findAll()
@@ -40,12 +41,52 @@ router.delete('/:id', (req, res) => {
 })
 
 router.post('/order/recommended', (req, res) => {
-    models.item.findAll()
-        .then(items => {
+    var itemIds = _.pluck(req.body.items, 'id')
+    models.order.findAll({
+        include: [{
+            model: models.orderItem,
+            where: {
+                itemId: {
+                    $in: itemIds
+                }
+            }
+        }],
+        attributes: ['id']
+    }).then(order => {
+        let orderIds = _.pluck(order, 'id')
+        return models.order.findAll({
+            where: {
+                id: {
+                    $in: orderIds
+                }
+            },
+            include: [models.orderItem]
+        })
+    }).then(orders => {
+        var items = _.pluck(orders, 'orderItems')
+        items = _.pluck(_.flatten(items), 'itemId')
+        var rec = items.filter(item => {
+            return itemIds.indexOf(item + '') == -1
+        })
+        rec = _.uniq(rec)
+        models.item.findAll({
+            where: {
+                id: {
+                    $in: rec
+                }
+            }
+        }).then(items => {
             res.json(items)
         }).catch(err => {
-            res.status(400).json(err)
+            models.item.findAll()
+                .then(items => {
+                    res.json(items)
+                }).catch(err => {
+                    res.status(400).json(err)
+                })
         })
+    })
+
 })
 
 module.exports = router;
